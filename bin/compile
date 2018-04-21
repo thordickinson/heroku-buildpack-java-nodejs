@@ -280,11 +280,16 @@ if [ ! -d $GLOBAL_CACHE_DIR ]; then
 	mkdir -p $CACHE_DIR/.npm && rsync -a --delete $BUILD_DIR/.npm/
   fi
   if [ -d $CACHE_DIR/.npm/ ]; then
-	mkdir -p $CACHE_DIR/.npm && rsync -a --delete $BUILD_DIR/.npm/
+	mkdir -p $CACHE_DIR/.npm && rsync -a --delete $CACHE_DIR/.npm/
   fi
 
   echo "-----> Caching bower cache directory for future builds"
-  mkdir -p $CACHE_DIR/.cache/bower && rsync -a --delete $HOME/.cache/bower/ $CACHE_DIR/.cache/bower/
+  if [ -d $HOME/.cache/bower/ ]; then
+	mkdir -p $CACHE_DIR/.cache/bower && rsync -a --delete $HOME/.cache/bower/
+  fi
+  if [ -d $CACHE_DIR/.cache/bower/ ]; then
+	mkdir -p $CACHE_DIR/.cache/bower && rsync -a --delete $CACHE_DIR/.cache/bower/
+  fi
 fi
 
 echo "-----> Cleaning up cache directories"
