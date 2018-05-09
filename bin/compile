@@ -186,14 +186,18 @@ if [ -n "$committed_node_modules_dirs" ]; then
   done
 fi
 
+cache_node_modules=${CACHE_NODE_MODULES:-"true"}
+
 if [ -n "$cached_node_modules_dirs" ]; then
   echo "$cached_node_modules_dirs" | while read line
   do
-    if [ ! -d "$BUILD_DIR/$line" ]; then
+    if [ ! -d "$BUILD_DIR/$line" ] && [ "${cache_node_modules}" = true ]; then
       status "Restoring $line from cache"
       mkdir -p "$BUILD_DIR/$(dirname "$line")" && cp -r "$CACHE_DIR/$line" "$BUILD_DIR/$line"
       status "Pruning cached dependencies not specified in package.json"
       pushd "$BUILD_DIR/$(dirname "$line")" >/dev/null; npm prune 2>&1 | indent; popd >/dev/null
+	else
+		rm -rf "$CACHE_DIR/$line"
     fi
   done
 fi
